@@ -1,25 +1,68 @@
 var User = require('../models/user');
+// Models
+var Review = require("../models/review")
+
 var config = require('../config/database');
 var jwt = require('jwt-simple');
 
 var functions = {
+    // Routes
+ 
+    // Get reviews
+     getReview:function(req, res) {
+ 
+        console.log("fetching reviews");
+ 
+        // use mongoose to get all reviews in the database
+        Review.find(function(err, reviews) {
+ 
+            // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+            if (err)
+                res.send(err)
+ 
+            res.json(reviews); // return all reviews in JSON format
+        });
+    },
+    // create review and send back all reviews after creation
+    postReview:function(req, res) {
+ 
+        console.log("creating review");
+ 
+        // create a review, information comes from AJAX request from Ionic
+        Review.create({
+            title : req.body.title,
+            description : req.body.description,
+            rating: req.body.rating,
+            done : false
+        }, function(err, review) {
+            if (err)
+                res.send(err);
+ 
+            // get and return all the reviews after you create another
+            Review.find(function(err, reviews) {
+                if (err)
+                    res.send(err)
+                res.json(reviews);
+            });
+        });
+ 
+    },
     authenticate: function(req, res) {
         User.findOne({
             name: req.body.name
         }, function(err, user){
             if (err) throw err;
-            
+                     
             if(!user) {
-                res.status(403).send({success: false, msg: 'Authentication failed, User not found'});
+                res.json({success: false, msg: 'Authentication failed, User not found'});
             }
-            
            else {
                 user.comparePassword(req.body.password, function(err, isMatch){
                     if(isMatch && !err) {
                         var token = jwt.encode(user, config.secret);
                         res.json({success: true, token: token});
                     } else {
-                        return res.status(403).send({success: false, msg: 'Authenticaton failed, wrong password.'});
+                        rres.json({success: false, msg: 'Authenticaton failed, wrong password.'});
                     }
                 })
             }

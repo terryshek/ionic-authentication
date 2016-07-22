@@ -3,7 +3,9 @@ import {Platform, ionicBootstrap} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 import { Reviews } from "./providers/reviews/reviews"
-import { LoginPage } from "./pages/login/login"
+import { LoginPage } from "./pages/login/login";
+import { LeftMenuPage } from "./pages/left-menu/left-menu"
+
 
 
 
@@ -12,7 +14,7 @@ import { LoginPage } from "./pages/login/login"
   template: '<ion-nav [root]="rootPage"></ion-nav>'
 })
 export class MyApp {
-  rootPage: any = HomePage;
+  rootPage: any = (window.localStorage.getItem('loginToken'))?LoginPage:LeftMenuPage;
 
   constructor(platform: Platform) {
     platform.ready().then(() => {
@@ -23,4 +25,4 @@ export class MyApp {
   }
 }
 
-ionicBootstrap(MyApp, [Reviews, provide('ApiEndpoint', {useValue: 'http://localhost:8080/api/reviews'})]);
+ionicBootstrap(MyApp, [Reviews, provide('ApiEndpoint', {useValue: 'http://localhost:8080'})]);

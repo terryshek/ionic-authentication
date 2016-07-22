@@ -1,4 +1,4 @@
 module.exports = {
-    'database': 'mongodb://terryshek:Fredew33@ds023425.mlab.com:23425/reviewking',
+    'database': 'mongodb://root:1234@ds023245.mlab.com:23245/ionic2',
     'secret': 'itssecret'
 }
